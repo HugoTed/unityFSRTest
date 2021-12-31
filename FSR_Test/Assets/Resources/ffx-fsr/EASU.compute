@@ -1,0 +1,73 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#pragma kernel Setup
+
+#define A_GPU 1
+#define A_HLSL 1
+#define A_HALF 1
+#include "./ffx_a.hlsl"
+#define FSR_EASU_H 1
+#define FSR_RCAS_H 1
+//declare input callbacks
+#include "./ffx_fsr1.hlsl"
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWStructuredBuffer<uint4> _EASUConsts;
+SamplerState samLinearClamp;
+Texture2D InputTexture;
+RWTexture2D<AF4> OutputTexture;
+
+float4 _RenderViewportSize;
+float4 _ContainerTextureSize;
+float4 _UpscaledViewportSzie;
+
+AH4 FsrEasuRH(AF2 p){ AH4 res = InputTexture.GatherRed(samLinearClamp,p,ASU2(0,0)); return res;}
+AH4 FsrEasuGH(AF2 p){ AH4 res = InputTexture.GatherGreen(samLinearClamp,p,ASU2(0,0)); return res;}
+AH4 FsrEasuBH(AF2 p){ AH4 res = InputTexture.GatherBlue(samLinearClamp,p,ASU2(0,0)); return res;}
+
+AF4 FsrEasuRF(AF2 p){ AF4 res = InputTexture.GatherRed(samLinearClamp,p,ASU2(0,0)); return res;}
+AF4 FsrEasuGF(AF2 p){ AF4 res = InputTexture.GatherGreen(samLinearClamp,p,ASU2(0,0)); return res;}
+AF4 FsrEasuBF(AF2 p){ AF4 res = InputTexture.GatherBlue(samLinearClamp,p,ASU2(0,0)); return res;}
+
+[numthreads(64,1,1)]
+void CSMain (uint3 LocalThreadId : SV_DispatchThreadID,uint3 WorkGroupId : SV_GroupID,uint3 Dtid : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    AU2 gxy = ARmp8x8(LocalThreadId.x) + AU2(WorkGroupId.x << 4u, WorkGroupId.y << 4u);
+    AH3 Gamma2Color = AH3(0,0,0);
+    FsrEasuH(Gamma2Color,gxy,_EASUConsts[0],_EASUConsts[1],_EASUConsts[2],_EASUConsts[3]);
+
+    FsrEasuH(Gamma2Color,gxy,_EASUConsts[0],_EASUConsts[1],_EASUConsts[2],_EASUConsts[3]);
+    OutputTexture[gxy] = AF4(Gamma2Color,1);
+
+    gxy.x += 8u;
+    FsrEasuH(Gamma2Color,gxy,_EASUConsts[0],_EASUConsts[1],_EASUConsts[2],_EASUConsts[3]);
+    OutputTexture[gxy] = AF4(Gamma2Color,1);
+
+    gxy.y += 8u;
+    FsrEasuH(Gamma2Color,gxy,_EASUConsts[0],_EASUConsts[1],_EASUConsts[2],_EASUConsts[3]);
+    OutputTexture[gxy] = AF4(Gamma2Color,1);
+
+    gxy.x -= 8u;
+    FsrEasuH(Gamma2Color,gxy,_EASUConsts[0],_EASUConsts[1],_EASUConsts[2],_EASUConsts[3]);
+    OutputTexture[gxy] = AF4(Gamma2Color,1);
+}
+
+[numthreads(1,1,1)]
+void Setup(){
+    AU4 const0= (AU4)0;
+    AU4 const1= (AU4)0;
+    AU4 const2= (AU4)0;
+    AU4 const3= (AU4)0;
+
+    FsrEasuCon(const0,const1,const2,const3,
+    _RenderViewportSize.x,_RenderViewportSize.y,
+    _ContainerTextureSize.x,_ContainerTextureSize.y,
+    _UpscaledViewportSzie.x,_UpscaledViewportSzie.y);
+
+    _EASUConsts[0] = const0;
+    _EASUConsts[1] = const1;
+    _EASUConsts[2] = const2;
+    _EASUConsts[3] = const3;
+}
