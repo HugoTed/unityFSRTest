@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ForwardRenderer
   m_EditorClassIdentifier: 
   m_RendererFeatures:
-  - {fileID: 4365315102508112999}
-  m_RendererFeatureMap: 67dca411f5b6943c
+  - {fileID: 2631200962205211778}
+  m_RendererFeatureMap: 825ce89c55e78324
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
@@ -43,7 +43,7 @@ MonoBehaviour:
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_AccurateGbufferNormals: 0
---- !u!114 &4365315102508112999
+--- !u!114 &2631200962205211778
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52,33 +52,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: CustomPass
+  m_Script: {fileID: 11500000, guid: db187deeba648f44d887fc6b05e54cac, type: 3}
+  m_Name: NewAdditionPPRenderPassFeature
   m_EditorClassIdentifier: 
-  m_Active: 0
-  settings:
-    passTag: CustomPass
-    Event: 550
-    filterSettings:
-      RenderQueueType: 0
-      LayerMask:
-        serializedVersion: 2
-        m_Bits: 4294967295
-      PassNames: []
-    overrideMaterial: {fileID: 15303, guid: 0000000000000000f000000000000000, type: 0}
-    overrideMaterialPassIndex: 0
-    overrideDepthState: 0
-    depthCompareFunction: 4
-    enableWrite: 1
-    stencilSettings:
-      overrideStencilState: 0
-      stencilReference: 0
-      stencilCompareFunction: 8
-      passOperation: 0
-      failOperation: 0
-      zFailOperation: 0
-    cameraSettings:
-      overrideCamera: 0
-      restoreCamera: 1
-      offset: {x: 0, y: 0, z: 0, w: 0}
-      cameraFieldOfView: 60
+  m_Active: 1
+  postProcessData: {fileID: 11400000, guid: 3bc42d0d918349841bd7e156983f220f, type: 2}

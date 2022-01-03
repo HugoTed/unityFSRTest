@@ -66,8 +66,8 @@ namespace UnityEngine.Rendering.Universal
             public Shader finalPostPassPS;
 
             //custom
-            [Reload("Shaders/PostProcessing/Grayscale.shader")]
-            public Shader GrayscalePS;
+            //[Reload("Shaders/PostProcessing/Grayscale.shader")]
+            //public Shader GrayscalePS;
         }
 
         [Serializable, ReloadGroup]

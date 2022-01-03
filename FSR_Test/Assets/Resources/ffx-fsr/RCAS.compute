@@ -9,7 +9,7 @@
 #define FSR_EASU_H 1
 #define FSR_RCAS_H 1
 //declare input callbacks
-#include "./ffx_fsr1.hlsl"
+
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
@@ -28,12 +28,15 @@ void FsrRcasInputHx2(inout AH1 r,inout AH1 g,inout AH1 b){}
 AH4 FsrRcasLoadF(ASW2 p) {return InputTexture.Load(int3(p,0));}
 void FsrRcasInputF(inout AH1 r,inout AH1 g,inout AH1 b){}
 
+#include "./ffx_fsr1.hlsl"
+
 [numthreads(64,1,1)]
 void CSMain (uint3 LocalThreadId : SV_DispatchThreadID,uint3 WorkGroupId : SV_GroupID,uint3 Dtid : SV_DispatchThreadID)
 {
     // TODO: insert actual code here!
     AU2 gxy = ARmp8x8(LocalThreadId.x) + AU2(WorkGroupId.x << 4u, WorkGroupId.y << 4u);
     AH3 Gamma2Color = AH3(0,0,0);
+    //AH3 ojbkColor = AH3(0.5, 1, 0.5);
     FsrRcasH(Gamma2Color.r,Gamma2Color.g,Gamma2Color.b,gxy,_RCASConsts[0]);
 
     FsrRcasH(Gamma2Color.r,Gamma2Color.g,Gamma2Color.b,gxy,_RCASConsts[0]);

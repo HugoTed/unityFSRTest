@@ -3,7 +3,7 @@ using System;
 namespace UnityEngine.Rendering.Universal
 {
 
-    [Serializable, VolumeComponentMenu("Post-processing/AMD_FSR")]
+    [Serializable, VolumeComponentMenu("Addition-Post-Processing/AMD_FSR")]
     public class AMD_FSR : VolumeComponent, IPostProcessComponent
     {
         [Header("FSR Compute Shaders")]
@@ -27,6 +27,12 @@ namespace UnityEngine.Rendering.Universal
         {
             base.Override(state, interpFactor);
         }
+
+        internal void Cleanup()
+        {
+            CoreUtils.Destroy(computeShaderEASU.value);
+            CoreUtils.Destroy(computeShaderRCAS.value);
+        }
     }
 
     [Serializable]
@@ -34,6 +40,6 @@ namespace UnityEngine.Rendering.Universal
     {
         public ComputeShaderParameter(ComputeShader computeShader,bool overrideState = false):
             base(computeShader,overrideState)
-        { }
+        { value = computeShader; }
     }
 }

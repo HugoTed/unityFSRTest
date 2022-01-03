@@ -9,7 +9,7 @@
 #define FSR_EASU_H 1
 #define FSR_RCAS_H 1
 //declare input callbacks
-#include "./ffx_fsr1.hlsl"
+
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
@@ -29,6 +29,8 @@ AH4 FsrEasuBH(AF2 p){ AH4 res = InputTexture.GatherBlue(samLinearClamp,p,ASU2(0,
 AF4 FsrEasuRF(AF2 p){ AF4 res = InputTexture.GatherRed(samLinearClamp,p,ASU2(0,0)); return res;}
 AF4 FsrEasuGF(AF2 p){ AF4 res = InputTexture.GatherGreen(samLinearClamp,p,ASU2(0,0)); return res;}
 AF4 FsrEasuBF(AF2 p){ AF4 res = InputTexture.GatherBlue(samLinearClamp,p,ASU2(0,0)); return res;}
+
+#include "./ffx_fsr1.hlsl"
 
 [numthreads(64,1,1)]
 void CSMain (uint3 LocalThreadId : SV_DispatchThreadID,uint3 WorkGroupId : SV_GroupID,uint3 Dtid : SV_DispatchThreadID)

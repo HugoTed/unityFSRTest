@@ -53,16 +53,16 @@ namespace UnityEngine.Rendering.Universal.Internal
         Tonemapping m_Tonemapping;
         FilmGrain m_FilmGrain;
         //custom effect
-        Grayscale m_Grayscale;
+        //Grayscale m_Grayscale;
         //-------------AMD_FSR---------------------
-        AMD_FSR m_Fsr;
-        ComputeBuffer EASUConstsCB, RCASConstsCB;
-        private int scaledPixelWidth = 0;
-        private int scaledPixelHeight = 0;
-        private int scaledPixelWidthPrev = 0;
-        private int scaledPixelHeightPrev = 0;
-        private RenderTexture outputImage, outputImage2;
-        bool m_IsSetupFsr = false;
+        //AMD_FSR m_Fsr;
+        //ComputeBuffer EASUConstsCB, RCASConstsCB;
+        //private int scaledPixelWidth = 0;
+        //private int scaledPixelHeight = 0;
+        //private int scaledPixelWidthPrev = 0;
+        //private int scaledPixelHeightPrev = 0;
+        //private RenderTexture outputImage, outputImage2;
+        //bool m_IsSetupFsr = false;
         // Misc
         const int k_MaxPyramidSize = 16;
         readonly GraphicsFormat m_DefaultHDRFormat;
@@ -145,27 +145,27 @@ namespace UnityEngine.Rendering.Universal.Internal
         public void Cleanup() 
         { 
             m_Materials.Cleanup();
-            if(outputImage != null)
-            {
-                outputImage.Release();
-                outputImage = null;
-            }
-            if (outputImage2 != null)
-            {
-                outputImage2.Release();
-                outputImage2 = null;
-            }
-            if(EASUConstsCB != null)
-            {
-                EASUConstsCB.Dispose();
-                EASUConstsCB = null;
-            }
-            if(RCASConstsCB != null)
-            {
-                RCASConstsCB.Dispose();
-                RCASConstsCB = null;
-            }
-            m_IsSetupFsr = false;
+            //if(outputImage != null)
+            //{
+            //    outputImage.Release();
+            //    outputImage = null;
+            //}
+            //if (outputImage2 != null)
+            //{
+            //    outputImage2.Release();
+            //    outputImage2 = null;
+            //}
+            //if(EASUConstsCB != null)
+            //{
+            //    EASUConstsCB.Dispose();
+            //    EASUConstsCB = null;
+            //}
+            //if(RCASConstsCB != null)
+            //{
+            //    RCASConstsCB.Dispose();
+            //    RCASConstsCB = null;
+            //}
+            //m_IsSetupFsr = false;
         }
 
         public void Setup(in RenderTextureDescriptor baseDescriptor, in RenderTargetHandle source, in RenderTargetHandle destination, in RenderTargetHandle depth, in RenderTargetHandle internalLut, bool hasFinalPass, bool enableSRGBConversion)
@@ -248,10 +248,10 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_Tonemapping         = stack.GetComponent<Tonemapping>();
             m_FilmGrain           = stack.GetComponent<FilmGrain>();
             m_UseDrawProcedural   = renderingData.cameraData.xr.enabled;
-            //custom
-            m_Grayscale = stack.GetComponent<Grayscale>();
-            //AMD_FSR
-            m_Fsr = stack.GetComponent<AMD_FSR>();
+            ////custom
+            //m_Grayscale = stack.GetComponent<Grayscale>();
+            ////AMD_FSR
+            //m_Fsr = stack.GetComponent<AMD_FSR>();
 
             if (m_IsFinalPass)
             {
@@ -391,25 +391,25 @@ namespace UnityEngine.Rendering.Universal.Internal
                 }
             }
             //AMD_FSR
-            if(m_Fsr.IsActive()&& !isSceneViewCamera)
-            {
-                using (new ProfilingScope(cmd, ProfilingSampler.Get(CustomProfileId.AMD_FSR)))
-                {
-                    SetupAMD_FSR(cmd, cameraData);
-                    DoAMD_FSR(cmd,cameraData,GetSource(),GetDestination());
-                    Swap();
-                }
-            }
+            //if(m_Fsr.IsActive()&& !isSceneViewCamera)
+            //{
+            //    using (new ProfilingScope(cmd, ProfilingSampler.Get(CustomProfileId.AMD_FSR)))
+            //    {
+            //        SetupAMD_FSR(cmd, cameraData);
+            //        DoAMD_FSR(cmd,cameraData,GetSource(),GetDestination());
+            //        Swap();
+            //    }
+            //}
 
             //custom
-            if (m_Grayscale.IsActive() && !isSceneViewCamera)
-            {
-                using (new ProfilingScope(cmd, ProfilingSampler.Get(CustomProfileId.Grayscale)))
-                {
-                    //DoGrayscale(cmd, GetSource(), GetDestination(), m_Materials.grayscale);
-                    //Swap();
-                }
-            }
+            //if (m_Grayscale.IsActive() && !isSceneViewCamera)
+            //{
+            //    using (new ProfilingScope(cmd, ProfilingSampler.Get(CustomProfileId.Grayscale)))
+            //    {
+            //        //DoGrayscale(cmd, GetSource(), GetDestination(), m_Materials.grayscale);
+            //        //Swap();
+            //    }
+            //}
 
             // Anti-aliasing
             if (cameraData.antialiasing == AntialiasingMode.SubpixelMorphologicalAntiAliasing && SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2)
@@ -1331,7 +1331,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 uber = Load(data.shaders.uberPostPS);
                 finalPass = Load(data.shaders.finalPostPassPS);
                 //custom
-                grayscale = Load(data.shaders.GrayscalePS);
+                //grayscale = Load(data.shaders.GrayscalePS);
             }
 
             Material Load(Shader shader)
@@ -1437,108 +1437,108 @@ namespace UnityEngine.Rendering.Universal.Internal
         #endregion
 
         #region Grayscale
-        void DoGrayscale(CommandBuffer cmd,int src,int dest,Material material)
-        {
-            //cmd.SetGlobalFloat(ShaderConstants._Blend, m_Grayscale.blend.value);
-            material.SetFloat(ShaderConstants._Blend,m_Grayscale.blend.value);
-            Blit(cmd,src, dest, material);
-        }
+        //void DoGrayscale(CommandBuffer cmd,int src,int dest,Material material)
+        //{
+        //    //cmd.SetGlobalFloat(ShaderConstants._Blend, m_Grayscale.blend.value);
+        //    material.SetFloat(ShaderConstants._Blend,m_Grayscale.blend.value);
+        //    Blit(cmd,src, dest, material);
+        //}
         #endregion
 
         #region AMD_FSR
 
-        void SetupAMD_FSR(CommandBuffer cmd,CameraData cameraData)
-        {
-            //EASUConstsCB, RCASConstsCB
-            EASUConstsCB = new ComputeBuffer(4, sizeof(uint) * 4);
-            EASUConstsCB.name = "EASU Consts";
+        //void SetupAMD_FSR(CommandBuffer cmd, CameraData cameraData)
+        //{
+        //    //EASUConstsCB, RCASConstsCB
+        //    EASUConstsCB = new ComputeBuffer(4, sizeof(uint) * 4);
+        //    EASUConstsCB.name = "EASU Consts";
 
-            RCASConstsCB = new ComputeBuffer(1, sizeof(uint) * 4);
-            RCASConstsCB.name = "RCAS Consts";
+        //    RCASConstsCB = new ComputeBuffer(1, sizeof(uint) * 4);
+        //    RCASConstsCB.name = "RCAS Consts";
 
-            //render the scene to a downsised RT
-            scaledPixelWidth = (int)(cameraData.camera.pixelWidth / m_Fsr.scaleFactor.value);
-            scaledPixelHeight = (int)(cameraData.camera.pixelHeight / m_Fsr.scaleFactor.value);
+        //    //render the scene to a downsised RT
+        //    scaledPixelWidth = (int)(cameraData.camera.pixelWidth / m_Fsr.scaleFactor.value);
+        //    scaledPixelHeight = (int)(cameraData.camera.pixelHeight / m_Fsr.scaleFactor.value);
 
-            cmd.GetTemporaryRT(ShaderConstants._TempTarget, scaledPixelWidth, scaledPixelHeight);
-            m_IsSetupFsr = true;
-        }
-        void DoAMD_FSR(CommandBuffer cmd,CameraData cameraData,int src,int dest)
-        {
-            Camera cam = cameraData.camera;
-            float scaleFactor = m_Fsr.scaleFactor.value;
-            bool sharpening = m_Fsr.sharpening.value;
-            if (outputImage == null || scaledPixelWidthPrev != scaledPixelWidth || scaledPixelHeightPrev != scaledPixelHeight || m_IsSetupFsr == false && m_Fsr.sharpening.value)
-            {
-                
-               
-                //cam.allowDynamicResolution = true;
-                scaledPixelWidthPrev = scaledPixelWidth;
-                scaledPixelHeightPrev = scaledPixelHeight;
-
-                float normalizedScale = (scaleFactor - 1.3f) / (2f - 1.3f);
-                float mipBias = -Mathf.Lerp(0.38f, 1f, normalizedScale); //Ultra Quality -0.38f, Quality -0.58f, Balanced -0.79f, Performance -1f
-
-                //EASU
-                if (outputImage) outputImage.Release();
-                outputImage = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 0, new RenderTexture(GetCompatibleDescriptor()).format, RenderTextureReadWrite.sRGB); //, RenderTextureFormat.ARGB32);
-                //outputImage.useDynamicScale = false;
-                outputImage.enableRandomWrite = true;
-                //outputImage.mipMapBias = mipBias; //Ultra Quality -0.38f, Quality -0.58f, Balanced -0.79f, Performance -1f
-                outputImage.Create();
-
-                //RCAS
-                if (sharpening)
-                {
-                    m_IsSetupFsr = true;
-                    if (outputImage2) outputImage2.Release();
-                    outputImage2 = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 0, new RenderTexture(GetCompatibleDescriptor()).format, RenderTextureReadWrite.sRGB); //, RenderTextureFormat.ARGB32);
-                    //outputImage.useDynamicScale = false;
-                    outputImage2.enableRandomWrite = true;
-                    //outputImage2.mipMapBias = mipBias;//Ultra Quality -0.38f, Quality -0.58f, Balanced -0.79f, Performance -1f
-                    outputImage2.Create();
-                }
-            }
-
-            //EASU
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetVector(ShaderConstants._RenderViewportSize, new Vector4(cam.pixelWidth, cam.pixelHeight));
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetVector(ShaderConstants._ContainerTextureSize, new Vector4(cam.pixelWidth, cam.pixelHeight));
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetVector(ShaderConstants._UpscaledViewportSzie, new Vector4(outputImage.width, outputImage.height, 1f / outputImage.width, 1f / outputImage.height));
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetBuffer(1, ShaderConstants._EASUConsts, EASUConstsCB);
-
-            ((ComputeShader)m_Fsr.computeShaderEASU).Dispatch(1, 1, 1, 1); //init
-
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetTexture(0, ShaderConstants.InputTexture, new RenderTexture(GetCompatibleDescriptor()));
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetTexture(0, ShaderConstants.OutputTexture, outputImage);
-
-            const int ThreadGroupWorkRegionRim = 8;
-            int dispatchX = (outputImage.width + ThreadGroupWorkRegionRim - 1) / ThreadGroupWorkRegionRim;
-            int dispatchY = (outputImage.height + ThreadGroupWorkRegionRim - 1) / ThreadGroupWorkRegionRim;
-
-            ((ComputeShader)m_Fsr.computeShaderEASU).SetBuffer(0, ShaderConstants._EASUConsts, EASUConstsCB);
-            ((ComputeShader)m_Fsr.computeShaderEASU).Dispatch(0, dispatchX, dispatchY, 1); //main
-
-            //RCAS
-            if (sharpening)
-            {
-                ((ComputeShader)m_Fsr.computeShaderRCAS).SetBuffer(1, ShaderConstants._RCASConsts, RCASConstsCB);
-                ((ComputeShader)m_Fsr.computeShaderRCAS).SetFloat(ShaderConstants._Sharpness, m_Fsr.sharpness.value);
-                ((ComputeShader)m_Fsr.computeShaderRCAS).Dispatch(1, 1, 1, 1); //init
-
-                ((ComputeShader)m_Fsr.computeShaderRCAS).SetBuffer(0, ShaderConstants._RCASConsts, RCASConstsCB);
-                ((ComputeShader)m_Fsr.computeShaderRCAS).SetTexture(0, ShaderConstants.InputTexture, outputImage);
-                ((ComputeShader)m_Fsr.computeShaderRCAS).SetTexture(0, ShaderConstants.OutputTexture, outputImage2);
-
-                ((ComputeShader)m_Fsr.computeShaderRCAS).Dispatch(0, dispatchX, dispatchY, 1); //main
-            }
-
-            cmd.Blit(sharpening ? outputImage2 : outputImage, dest);//, new Vector2(1f / scaleFactor, 1f / scaleFactor), new Vector2(0f, 0f));
-            //RenderTexture.ReleaseTemporary(outputImage);
+        //    cmd.GetTemporaryRT(ShaderConstants._TempTarget, scaledPixelWidth, scaledPixelHeight);
+        //    m_IsSetupFsr = true;
+        //}
+        //void DoAMD_FSR(CommandBuffer cmd, CameraData cameraData, int src, int dest)
+        //{
+        //    Camera cam = cameraData.camera;
+        //    float scaleFactor = m_Fsr.scaleFactor.value;
+        //    bool sharpening = m_Fsr.sharpening.value;
+        //    if (outputImage == null || scaledPixelWidthPrev != scaledPixelWidth || scaledPixelHeightPrev != scaledPixelHeight || m_IsSetupFsr == false && m_Fsr.sharpening.value)
+        //    {
 
 
+        //        //cam.allowDynamicResolution = true;
+        //        scaledPixelWidthPrev = scaledPixelWidth;
+        //        scaledPixelHeightPrev = scaledPixelHeight;
+
+        //        float normalizedScale = (scaleFactor - 1.3f) / (2f - 1.3f);
+        //        float mipBias = -Mathf.Lerp(0.38f, 1f, normalizedScale); //Ultra Quality -0.38f, Quality -0.58f, Balanced -0.79f, Performance -1f
+
+        //        //EASU
+        //        if (outputImage) outputImage.Release();
+        //        outputImage = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 0, new RenderTexture(GetCompatibleDescriptor()).format, RenderTextureReadWrite.sRGB); //, RenderTextureFormat.ARGB32);
+        //        //outputImage.useDynamicScale = false;
+        //        outputImage.enableRandomWrite = true;
+        //        //outputImage.mipMapBias = mipBias; //Ultra Quality -0.38f, Quality -0.58f, Balanced -0.79f, Performance -1f
+        //        outputImage.Create();
+
+        //        //RCAS
+        //        if (sharpening)
+        //        {
+        //            m_IsSetupFsr = true;
+        //            if (outputImage2) outputImage2.Release();
+        //            outputImage2 = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 0, new RenderTexture(GetCompatibleDescriptor()).format, RenderTextureReadWrite.sRGB); //, RenderTextureFormat.ARGB32);
+        //            //outputImage.useDynamicScale = false;
+        //            outputImage2.enableRandomWrite = true;
+        //            //outputImage2.mipMapBias = mipBias;//Ultra Quality -0.38f, Quality -0.58f, Balanced -0.79f, Performance -1f
+        //            outputImage2.Create();
+        //        }
+        //    }
+
+        //    //EASU
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetVector(ShaderConstants._RenderViewportSize, new Vector4(cam.pixelWidth, cam.pixelHeight));
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetVector(ShaderConstants._ContainerTextureSize, new Vector4(cam.pixelWidth, cam.pixelHeight));
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetVector(ShaderConstants._UpscaledViewportSzie, new Vector4(outputImage.width, outputImage.height, 1f / outputImage.width, 1f / outputImage.height));
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetBuffer(1, ShaderConstants._EASUConsts, EASUConstsCB);
+
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).Dispatch(1, 1, 1, 1); //init
+
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetTexture(0, ShaderConstants.InputTexture, new RenderTexture(GetCompatibleDescriptor()));
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetTexture(0, ShaderConstants.OutputTexture, outputImage);
+
+        //    const int ThreadGroupWorkRegionRim = 8;
+        //    int dispatchX = (outputImage.width + ThreadGroupWorkRegionRim - 1) / ThreadGroupWorkRegionRim;
+        //    int dispatchY = (outputImage.height + ThreadGroupWorkRegionRim - 1) / ThreadGroupWorkRegionRim;
+
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).SetBuffer(0, ShaderConstants._EASUConsts, EASUConstsCB);
+        //    ((ComputeShader)m_Fsr.computeShaderEASU).Dispatch(0, dispatchX, dispatchY, 1); //main
+
+        //    //RCAS
+        //    if (sharpening)
+        //    {
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).SetBuffer(1, ShaderConstants._RCASConsts, RCASConstsCB);
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).SetFloat(ShaderConstants._Sharpness, m_Fsr.sharpness.value);
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).Dispatch(1, 1, 1, 1); //init
+
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).SetBuffer(0, ShaderConstants._RCASConsts, RCASConstsCB);
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).SetTexture(0, ShaderConstants.InputTexture, outputImage);
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).SetTexture(0, ShaderConstants.OutputTexture, outputImage2);
+
+        //        ((ComputeShader)m_Fsr.computeShaderRCAS).Dispatch(0, dispatchX, dispatchY, 1); //main
+        //    }
+
+        //    cmd.Blit(sharpening ? outputImage2 : outputImage, dest);//, new Vector2(1f / scaleFactor, 1f / scaleFactor), new Vector2(0f, 0f));
+        //    //RenderTexture.ReleaseTemporary(outputImage);
 
 
-        }
+
+
+        //}
         #endregion
     }
 }
